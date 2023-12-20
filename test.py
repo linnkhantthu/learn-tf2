@@ -1,10 +1,21 @@
 import tensorflow as tf
-import os
+from sys import argv
+
 imported = tf.saved_model.load(
-    "/home/linn/Projects/tf2/1702964658/")
+    "/home/linn/Projects/tf2/model_diabetes/")
 
 
-def predict(Pregnancies,	Glucose,	BloodPressure,	SkinThickness,	Insulin,	BMI,	DiabetesPedigreeFunction,	Age):
+def predict(Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, DiabetesPedigreeFunction, Age, *args):
+
+    Pregnancies = float(Pregnancies)
+    Glucose = float(Glucose)
+    BloodPressure = float(BloodPressure)
+    SkinThickness = float(SkinThickness)
+    Insulin = float(Insulin)
+    BMI = float(BMI)
+    DiabetesPedigreeFunction = float(DiabetesPedigreeFunction)
+    Age = float(Age)
+
     example = tf.train.Example()
     example.features.feature["Pregnancies"].float_list.value.extend([
                                                                     Pregnancies])
@@ -20,7 +31,11 @@ def predict(Pregnancies,	Glucose,	BloodPressure,	SkinThickness,	Insulin,	BMI,	Di
     example.features.feature["Age"].float_list.value.extend([Age])
     result = imported.signatures["predict"](
         examples=tf.constant([example.SerializeToString()]))
-    return result["probabilities"]
+
+    return result["probabilities"]._numpy()[0][1]
 
 
-print(predict(1, 85, 66, 29, 0, 26.6, 0.351, 31,))
+print(predict(*argv[1:]))
+# result = predict(1, 85, 66, 29, 0, 26.6, 0.351, 31)
+
+# print(result)
