@@ -1,8 +1,10 @@
 import tensorflow as tf
 from sys import argv
+import os
 
+path = os.path.dirname(os.path.abspath(__file__))
 imported = tf.saved_model.load(
-    "/home/linn/Projects/tf2/model_diabetes/")
+    f"{path}/models/model_diabetes/")
 
 
 def predict(Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, DiabetesPedigreeFunction, Age, *args):
@@ -18,7 +20,7 @@ def predict(Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, Di
 
     example = tf.train.Example()
     example.features.feature["Pregnancies"].float_list.value.extend([
-                                                                    Pregnancies])
+                                                                    Pregnancies])  # A List
     example.features.feature["Glucose"].float_list.value.extend([Glucose])
     example.features.feature["BloodPressure"].float_list.value.extend([
                                                                       BloodPressure])
