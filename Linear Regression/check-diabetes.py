@@ -4,7 +4,7 @@ import os
 
 path = os.path.dirname(os.path.abspath(__file__))
 imported = tf.saved_model.load(
-    f"{path}/models/model_diabetes/")
+    f"{path}/models/model_diabetes_females/")
 
 
 def predict(Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, DiabetesPedigreeFunction, Age, *args):
