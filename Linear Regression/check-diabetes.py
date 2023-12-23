@@ -2,16 +2,34 @@ import tensorflow as tf
 from sys import argv
 import os
 
+# Load model path
 path = os.path.dirname(os.path.abspath(__file__))
 imported = tf.saved_model.load(
     f"{path}/model/model_diabetes_females/")
 
 
 def predict(Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, DiabetesPedigreeFunction, Age, *args):
-    COLUMNS = ["Pregnancies", "Glucose", "BloodPressure", "SkinThickness",
-               "Insulin", "BMI", "DiabetesPedigreeFunction", "Age"]
+    """Predict Function
+
+    Keyword arguments:
+    Pregnancies -- Number of pregnancies that the patient carried
+    Glucose -- Glucose level of the patient
+    BloodPressure -- BloodPressure of the patient
+    SkinThickness -- Skin thickness of the arm from the back
+    Insulin -- Insulin of the patient
+    BMI -- BMI of the patient
+    DiabetesPedigreeFunction -- DiabetesPedigreeFunction
+    Age -- Age
+    Return: Probability of the patient to have diabetes
+    """
+
+    # Column Names
+    COLUMN_NAMES = ["Pregnancies", "Glucose", "BloodPressure", "SkinThickness",
+                    "Insulin", "BMI", "DiabetesPedigreeFunction", "Age"]
+    # Create an example of a standard proto storing data for training and inference.
     example = tf.train.Example()
 
+    # Turning args string to float
     Pregnancies = float(Pregnancies)
     Glucose = float(Glucose)
     BloodPressure = float(BloodPressure)
@@ -21,6 +39,7 @@ def predict(Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, Di
     DiabetesPedigreeFunction = float(DiabetesPedigreeFunction)
     Age = float(Age)
 
+    # Creating a dataframe dict
     dfpredict = {
         "Pregnancies": [Pregnancies],
         "Glucose": [Glucose],
@@ -31,25 +50,20 @@ def predict(Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, Di
         "DiabetesPedigreeFunction": [DiabetesPedigreeFunction],
         "Age": [Age],
     }
-    for feature_name in COLUMNS:
+
+    # Storing features into example proto
+    for feature_name in COLUMN_NAMES:
         example.features.feature[feature_name].float_list.value.extend(
             dfpredict[feature_name])
 
-    print(example)
-
+    # Predicting
     result = imported.signatures["predict"](
         examples=tf.constant([example.SerializeToString()]))
-    # def input_fn(data_df, batch_size=32):
-    #     return tf.data.Dataset.from_tensor_slices(dict(data_df)).batch(batch_size)
 
-    # r = imported.signatures["serving_default"](
-    #     tf.constant([dfpredict], dtype=tf.float32))
-    # print(r)
-
+    # Finally reaturning a probability of having diabetes
     return result["probabilities"]._numpy()[0][1]
 
 
 print(predict(*argv[1:]))
 
-# result = predict(1, 85, 66, 29, 0, 26.6, 0.351, 31)
-# print(result)
+# eg command: python check-diabetes.py 1 85 66 29 0 26.6 0.351 31
