@@ -10,24 +10,19 @@ imported = tf.saved_model.load(
 
 def predict(Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, DiabetesPedigreeFunction, Age, *args):
     """Predict Function
+    Example command: python check-diabetes.py 1 85 66 29 0 26.6 0.351 31
 
     Keyword arguments:
-    Pregnancies -- Number of pregnancies that the patient carried
-    Glucose -- Glucose level of the patient
-    BloodPressure -- BloodPressure of the patient
-    SkinThickness -- Skin thickness of the arm from the back
-    Insulin -- Insulin of the patient
-    BMI -- BMI of the patient
-    DiabetesPedigreeFunction -- DiabetesPedigreeFunction
-    Age -- Age
-    Return: Probability of the patient to have diabetes
+    Pregnancies: Number of times pregnant
+    Glucose: Plasma glucose concentration a 2 hours in an oral glucose tolerance test
+    BloodPressure: Diastolic blood pressure (mm Hg)
+    SkinThickness: Triceps skin fold thickness (mm)
+    Insulin: 2-Hour serum insulin (mu U/ml)
+    BMI: Body mass index (weight in kg/(height in m)^2)
+    DiabetesPedigreeFunction: Diabetes pedigree function
+    Age: Age (years)
+    Return: Probability of the patient likely to have diabetes
     """
-
-    # Column Names
-    COLUMN_NAMES = ["Pregnancies", "Glucose", "BloodPressure", "SkinThickness",
-                    "Insulin", "BMI", "DiabetesPedigreeFunction", "Age"]
-    # Create an example of a standard proto storing data for training and inference.
-    example = tf.train.Example()
 
     # Turning args string to float
     Pregnancies = float(Pregnancies)
@@ -38,6 +33,13 @@ def predict(Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, Di
     BMI = float(BMI)
     DiabetesPedigreeFunction = float(DiabetesPedigreeFunction)
     Age = float(Age)
+
+    # Column Names
+    COLUMN_NAMES = ["Pregnancies", "Glucose", "BloodPressure", "SkinThickness",
+                    "Insulin", "BMI", "DiabetesPedigreeFunction", "Age"]
+
+    # Create an example of a standard proto storing data for training and inference.
+    example = tf.train.Example()
 
     # Creating a dataframe dict
     dfpredict = {
@@ -65,5 +67,3 @@ def predict(Pregnancies, Glucose, BloodPressure, SkinThickness, Insulin, BMI, Di
 
 
 print(predict(*argv[1:]))
-
-# eg command: python check-diabetes.py 1 85 66 29 0 26.6 0.351 31
