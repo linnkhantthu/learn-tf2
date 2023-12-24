@@ -12,6 +12,7 @@ def predict(SepalLength, SepalWidth, PetalLength, PetalWidth, *args):
 
     # Column Names
     COLUMN_NAMES = ["SepalLength", "SepalWidth", "PetalLength", "PetalWidth"]
+    SPECIES = ["Setosa", "Versicolor", "Virginica"]
     SepalLength = float(SepalLength)
     SepalWidth = float(SepalWidth)
     PetalLength = float(PetalLength)
@@ -34,7 +35,7 @@ def predict(SepalLength, SepalWidth, PetalLength, PetalWidth, *args):
         examples=tf.constant([example.SerializeToString()])
     )
     class_id = result["class_ids"]._numpy()[0][0]
-    print(class_id)
+    print(SPECIES[class_id])
     return result["probabilities"]._numpy()[0][class_id]
 
 
